@@ -15,7 +15,8 @@ export async function execute(interaction: CommandInteraction, client: Client) {
 
     const thread = await (channel as TextChannel).threads.create({
         name: `support-${Date.now()}`,
-        reason: `Support ticket ${Date.now()}`
+        reason: `Support ticket ${Date.now()}`,
+        type: 12
     })
 
     const problemDescription = (interaction.options.get('description')?.value as string) || '';
