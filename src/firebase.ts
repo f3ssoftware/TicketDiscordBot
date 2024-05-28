@@ -1,0 +1,26 @@
+import { initializeApp } from "firebase/app";
+import {addDoc, getFirestore, collection} from "firebase/firestore/lite"
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpxPub8-c8BE6hkDDbcCjmKy7MpQH0CL8",
+  authDomain: "helpdesk-bot-1276e.firebaseapp.com",
+  projectId: "helpdesk-bot-1276e",
+  storageBucket: "helpdesk-bot-1276e.appspot.com",
+  messagingSenderId: "1093191074383",
+  appId: "1:1093191074383:web:477e0249e598f9c0b5203a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app)
+
+export async function createTicket(threadId: string, text: string){
+    try{
+        await addDoc(collection(db, 'tickets'),{
+            threadId,
+            text,
+            openedAt: Date()
+        })
+    }catch(e){
+
+    }
+}

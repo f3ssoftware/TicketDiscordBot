@@ -1,0 +1,27 @@
+{
+  "name": "discordbotticket",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
+    "deploy:commands": "tsc && node build/deploy-commands.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase": "^10.12.2"
+  }
+}
