@@ -18,7 +18,7 @@ export async function createTicket(threadId: string, text: string){
         await addDoc(collection(db, 'tickets'),{
             threadId,
             text,
-            openedAt: Date(),
+            openedAt: new Date().toISOString(),
             status: 'open'
         })
     }catch(e){
@@ -35,7 +35,6 @@ export async function updateTicketStatus(threadId: string, status: string) {
         // Atualiza o documento com o novo status
         await updateDoc(ticketRef, {
             status,
-            updatedAt: new Date().toISOString()
         });
 
         console.log(`Ticket ${threadId} atualizado para o status: ${status}`);
