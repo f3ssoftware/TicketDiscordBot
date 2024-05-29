@@ -1,5 +1,6 @@
 import {Client, ThreadChannel} from "discord.js"
 import express from "express"
+import { updateTicketStatus } from "./firebase"
 
 export function createRestApi(client: Client){
     const app = express()
@@ -47,6 +48,7 @@ export function createRestApi(client: Client){
 
          await thread.send("This conversation is marked as resolve and this thread will be archieved ")
          await thread.setArchived(true)
+         await updateTicketStatus(threadId as string, 'resolved');
          return res.status(200).send("Thread resolved")
 
     })

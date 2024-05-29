@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {addDoc, getFirestore, collection} from "firebase/firestore/lite"
+import {addDoc, getFirestore, collection, updateDoc, doc} from "firebase/firestore/lite"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDpxPub8-c8BE6hkDDbcCjmKy7MpQH0CL8",
@@ -18,9 +18,28 @@ export async function createTicket(threadId: string, text: string){
         await addDoc(collection(db, 'tickets'),{
             threadId,
             text,
-            openedAt: Date()
+            openedAt: Date(),
+            status: 'open'
         })
     }catch(e){
 
+    }
+}
+
+// Função para atualizar o status de um ticket
+export async function updateTicketStatus(threadId: string, status: string) {
+    try {
+        // Referência ao documento específico com o threadId
+        const ticketRef = doc(db, 'tickets', threadId);
+
+        // Atualiza o documento com o novo status
+        await updateDoc(ticketRef, {
+            status,
+            updatedAt: new Date().toISOString()
+        });
+
+        console.log(`Ticket ${threadId} atualizado para o status: ${status}`);
+    } catch (e) {
+        console.error("Erro ao atualizar o status do ticket: ", e);
     }
 }
