@@ -18,11 +18,11 @@ export async function createTicket(threadId: string, text: string){
         await addDoc(collection(db, 'tickets'),{
             threadId,
             text,
-            openedAt: new Date().toISOString(),
+            openedAt: new Date(),
             status: 'open'
         })
     }catch(e){
-
+        console.error("Error creating ticket: ", e);
     }
 }
 
