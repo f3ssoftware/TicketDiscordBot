@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {addDoc, getFirestore, collection, updateDoc, doc} from "firebase/firestore/lite"
+import {addDoc, getFirestore, collection, updateDoc, doc, setDoc} from "firebase/firestore/lite"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDpxPub8-c8BE6hkDDbcCjmKy7MpQH0CL8",
@@ -13,16 +13,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
-export async function createTicket(threadId: string, text: string){
-    try{
-        await addDoc(collection(db, 'tickets'),{
+export async function createTicket(threadId: string, text: string) {
+    try {
+        await setDoc(doc(db, 'tickets', threadId), {
             threadId,
             text,
-            openedAt: new Date(),
+            openedAt: new Date().toISOString(),
             status: 'open'
-        })
-    }catch(e){
-        console.error("Error creating ticket: ", e);
+        });
+        console.log(`Ticket ${threadId} criado com sucesso`);
+    } catch (e) {
+        console.error("Erro ao criar o ticket: ", e);
     }
 }
 
