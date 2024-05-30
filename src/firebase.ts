@@ -18,7 +18,7 @@ export async function createTicket(threadId: string, text: string) {
         await setDoc(doc(db, 'tickets', threadId), {
             threadId,
             text,
-            openedAt: new Date().toISOString(),
+            openedAt: new Date(),
             status: 'open'
         });
         console.log(`Ticket ${threadId} criado com sucesso`);
