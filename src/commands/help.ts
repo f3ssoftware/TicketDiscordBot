@@ -1,8 +1,12 @@
 import { ChannelType, Client, CommandInteraction, SlashCommandBuilder, TextChannel,
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle} from "discord.js";
+    ButtonStyle,
+    MessageComponentInteraction,
+    Interaction} from "discord.js";
 import { createTicket } from "../firebase";
+import { client } from "../bot";
+import axios from "axios";
 
 export const data = new SlashCommandBuilder().setName("help").setDescription("Creates a new help ticket.").addStringOption(option => option.setName("description").setDescription("Describe your problem").setRequired(true));
 
@@ -47,3 +51,23 @@ export async function execute(interaction: CommandInteraction, client: Client) {
     })
 
 }
+client.on('interactionCreate', async (interaction: Interaction) => {
+    if (!interaction.isButton()) return;
+
+    if (interaction.customId === 'resolve_ticket') {
+        const threadId = interaction.channelId;
+
+        try {
+            await axios.post('http://localhost:3000/resolve', { threadId });
+            await interaction.reply({
+                content: 'The ticket has been marked as resolved and the thread is now archived.',
+                ephemeral: true,
+            });
+        } catch (error) {
+            await interaction.reply({
+                content: 'An error occurred while updating the ticket status.',
+                ephemeral: true,
+            });
+        }
+    }
+});
