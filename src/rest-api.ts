@@ -46,11 +46,45 @@ export function createRestApi(client: Client){
             return res.status(404).send("Thread with this id was not found")
          }
 
-         await thread.send("This conversation is marked as resolve and this thread will be archieved ")
+         await thread.send("This ticket is marked as resolve and this thread will be archieved ")
          await thread.setArchived(true)
          await updateTicketStatus(threadId as string, 'resolved');
          return res.status(200).send("Thread resolved")
 
     })
+
+    app.post("/not-resolved", async (req, res) => {
+      const { threadId } = req.body;
+      if (!threadId) {
+        return res.status(400).send("Missing threadId");
+      }
+      const thread = await client.channels.fetch(threadId) as ThreadChannel;
+      if (!thread) {
+        return res.status(404).send("Thread with this id was not found");
+      }
+    
+      await thread.send("This ticket is marked as not resolved and this thread will be archived.");
+      await thread.setArchived(true);
+      await updateTicketStatus(threadId, 'not resolved');
+      return res.status(200).send("Thread not resolved");
+    });
+
+    app.post("/analyzing", async (req, res) => {
+      const { threadId } = req.body;
+      if (!threadId) {
+        return res.status(400).send("Missing threadId");
+      }
+      const thread = await client.channels.fetch(threadId) as ThreadChannel;
+      if (!thread) {
+        return res.status(404).send("Thread with this id was not found");
+      }
+    
+      await thread.send("This ticket is currently being analyzed.");
+      await updateTicketStatus(threadId, 'analyzing');
+      return res.status(200).send("Thread analyzing");
+    });
+
     return app;
+
+    
 }
