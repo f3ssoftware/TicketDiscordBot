@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Interaction, InteractionType } from 'discord.js';
+import { ButtonInteraction, Client, GatewayIntentBits, Interaction, InteractionType } from 'discord.js';
 import config from "./config";
 import * as commandModules from "./commands"
 import axios from "axios";
@@ -17,25 +17,27 @@ client.once("ready", () => {
   console.log("Discord bot ready!")
 });
 
-client.on('interactionCreate', async (interaction: Interaction) => {
-  if (interaction.type === InteractionType.ApplicationCommand) {
+client.on('interactionCreate', async interaction => {
+  if (interaction.isCommand()) {
     const { commandName } = interaction;
-    if (commands[commandName]) {
-      commands[commandName].execute(interaction, client);
-    }
-  } else if (interaction.type === InteractionType.MessageComponent) {
+    commands[commandName].execute(interaction, client);
+  } else if (interaction.isButton()) {
     if (interaction.customId === 'resolve_ticket') {
       const { channelId } = interaction;
 
       try {
         await axios.post('https://ticketdiscordbot.onrender.com/resolve', { threadId: channelId });
-        await interaction.reply({
-          content: 'The ticket has been marked as resolved and the thread is now archived.',
-          ephemeral: true,
+
+        // Confirm the interaction was successful
+        await (interaction as ButtonInteraction).reply({
+          content: 'The ticket has been marked as resolved and the thread is archived.',
+          ephemeral: true
         });
       } catch (error) {
         console.log(error);
-        await interaction.reply({
+
+        // Reply to the interaction indicating an error
+        await (interaction as ButtonInteraction).reply({
           content: 'An error occurred while updating the ticket status.',
           ephemeral: true,
         });
