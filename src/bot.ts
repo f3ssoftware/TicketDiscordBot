@@ -26,13 +26,15 @@ client.on('interactionCreate', async interaction => {
       const { channelId } = interaction;
 
       try {
-        await axios.post('https://ticketdiscordbot.onrender.com/resolve', { threadId: channelId });
 
         // Confirm the interaction was successful
         await (interaction as ButtonInteraction).reply({
           content: 'The ticket has been marked as resolved and the thread is archived.',
           ephemeral: true
         });
+
+        await axios.post('https://ticketdiscordbot.onrender.com/resolve', { threadId: channelId });
+
       } catch (error) {
         console.log(error);
 
