@@ -26,7 +26,9 @@ export const client = new Client({
   })
 
   client.on('interactionCreate', async interaction => {
-    if (!interaction.isButton()) return;
+    if (!interaction.isButton()){
+      return;
+    }
 
     if (interaction.customId === 'resolve_ticket') {
       const { channelId } = interaction;
