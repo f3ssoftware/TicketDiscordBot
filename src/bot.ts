@@ -25,7 +25,7 @@ export const client = new Client({
     commands[commandName].execute(interaction, client)
   })
 
-  client.on('interactionCreate', async interaction => {
+  client.on('interactionCreateBtn', async interaction => {
     if (!interaction.isButton()){
       return;
     }
