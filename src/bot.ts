@@ -17,14 +17,6 @@ export const client = new Client({
     console.log("Discord bot ready!")
   });
 
-  client.on('interactionCreate', async interaction =>{
-    if(!interaction.isCommand()){
-        return
-    }
-    const {commandName} = interaction;
-    commands[commandName].execute(interaction, client)
-  })
-
   client.on('interactionCreate', async interaction => {
     if (interaction.isCommand()) {
         const { commandName } = interaction;
