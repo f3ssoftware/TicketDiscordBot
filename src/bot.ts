@@ -29,10 +29,10 @@ export const client = new Client({
     if (!interaction.isButton()) return;
 
     if (interaction.customId === 'resolve_ticket') {
-        const threadId = interaction.channelId;
+      const { channelId } = interaction;
 
         try {
-            await axios.post('http://localhost:3000/resolve', { threadId });
+            await axios.post('http://localhost:3000/resolve', { threadId: channelId });
         } catch (error) {
             await interaction.reply({
                 content: 'An error occurred while updating the ticket status.',
