@@ -34,6 +34,7 @@ export const client = new Client({
         try {
             await axios.post('http://localhost:3000/resolve', { threadId: channelId });
         } catch (error) {
+          console.log(channelId)
             await interaction.reply({
                 content: 'An error occurred while updating the ticket status.',
                 ephemeral: true,
