@@ -45,6 +45,9 @@ export function createRestApi(client: Client){
          if(!thread){
             return res.status(404).send("Thread with this id was not found")
          }
+         if (thread.archived) {
+            return res.status(400).send("Thread is already archived.");
+        }
 
          await thread.send("This ticket is marked as resolve and this thread will be archieved ")
          await thread.setArchived(true)
