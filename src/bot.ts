@@ -32,7 +32,7 @@ export const client = new Client({
       const { channelId } = interaction;
 
         try {
-            await axios.post('http://localhost:3000/resolve', { threadId: channelId });
+            await axios.post('https://ticketdiscordbot.onrender.com/resolve', { threadId: channelId });
         } catch (error) {
           console.log(channelId)
             await interaction.reply({
