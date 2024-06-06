@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createRestApi = void 0;
 const express_1 = __importDefault(require("express"));
+const firebase_1 = require("./firebase");
 function createRestApi(client) {
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
@@ -53,9 +54,40 @@ function createRestApi(client) {
         if (!thread) {
             return res.status(404).send("Thread with this id was not found");
         }
-        yield thread.send("This conversation is marked as resolve and this thread will be archieved ");
+        if (thread.archived) {
+            return res.status(400).send("Thread is already archived.");
+        }
+        yield thread.send("This ticket is marked as resolve and this thread will be archieved ");
         yield thread.setArchived(true);
+        yield (0, firebase_1.updateTicketStatus)(threadId, 'resolved');
         return res.status(200).send("Thread resolved");
+    }));
+    app.post("/not-resolved", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const { threadId } = req.body;
+        if (!threadId) {
+            return res.status(400).send("Missing threadId");
+        }
+        const thread = yield client.channels.fetch(threadId);
+        if (!thread) {
+            return res.status(404).send("Thread with this id was not found");
+        }
+        yield thread.send("This ticket is marked as not resolved and this thread will be archived.");
+        yield thread.setArchived(true);
+        yield (0, firebase_1.updateTicketStatus)(threadId, 'not resolved');
+        return res.status(200).send("Thread not resolved");
+    }));
+    app.post("/analyzing", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const { threadId } = req.body;
+        if (!threadId) {
+            return res.status(400).send("Missing threadId");
+        }
+        const thread = yield client.channels.fetch(threadId);
+        if (!thread) {
+            return res.status(404).send("Thread with this id was not found");
+        }
+        yield thread.send("This ticket is currently being analyzed.");
+        yield (0, firebase_1.updateTicketStatus)(threadId, 'analyzing');
+        return res.status(200).send("Thread analyzing");
     }));
     return app;
 }

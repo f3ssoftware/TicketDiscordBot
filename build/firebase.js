@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTicket = void 0;
+exports.updateTicketStatus = exports.createTicket = void 0;
 const app_1 = require("firebase/app");
 const lite_1 = require("firebase/firestore/lite");
 const firebaseConfig = {
@@ -25,14 +25,35 @@ const db = (0, lite_1.getFirestore)(app);
 function createTicket(threadId, text) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield (0, lite_1.addDoc)((0, lite_1.collection)(db, 'tickets'), {
+            yield (0, lite_1.setDoc)((0, lite_1.doc)(db, 'tickets', threadId), {
                 threadId,
                 text,
-                openedAt: Date()
+                openedAt: new Date(),
+                status: 'open'
             });
+            console.log(`Ticket ${threadId} criado com sucesso`);
         }
         catch (e) {
+            console.error("Erro ao criar o ticket: ", e);
         }
     });
 }
 exports.createTicket = createTicket;
+// Função para atualizar o status de um ticket
+function updateTicketStatus(threadId, status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // Referência ao documento específico com o threadId
+            const ticketRef = (0, lite_1.doc)(db, 'tickets', threadId);
+            // Atualiza o documento com o novo status
+            yield (0, lite_1.updateDoc)(ticketRef, {
+                status,
+            });
+            console.log(`Ticket ${threadId} atualizado para o status: ${status}`);
+        }
+        catch (e) {
+            console.error("Erro ao atualizar o status do ticket: ", e);
+        }
+    });
+}
+exports.updateTicketStatus = updateTicketStatus;

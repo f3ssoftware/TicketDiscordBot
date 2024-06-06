@@ -39,6 +39,9 @@ exports.client = void 0;
 const discord_js_1 = require("discord.js");
 const config_1 = __importDefault(require("./config"));
 const commandModules = __importStar(require("./commands"));
+const buttonHelper_1 = require("./buttonHelper");
+const translationHelper_1 = require("./translationHelper");
+const axios_1 = __importDefault(require("axios"));
 const commands = Object(commandModules);
 exports.client = new discord_js_1.Client({
     intents: [
@@ -47,14 +50,52 @@ exports.client = new discord_js_1.Client({
         discord_js_1.GatewayIntentBits.DirectMessages
     ]
 });
-exports.client.once("ready", () => {
-    console.log("Discord bot ready!");
-});
-exports.client.on('interactionCreate', (interaction) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!interaction.isCommand()) {
-        return;
+const userLanguagePreferences = new Map();
+exports.client.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Discord bot ready!');
+    const channelId = '1245156290997522503';
+    const channel = yield exports.client.channels.fetch(channelId);
+    if (channel) {
+        channel.send({
+            content: (0, translationHelper_1.getTranslation)('en', 'select_language_prompt'),
+            components: [(0, buttonHelper_1.createLanguageSelectionButtons)()]
+        });
     }
-    const { commandName } = interaction;
-    commands[commandName].execute(interaction, exports.client);
+}));
+exports.client.on('interactionCreate', (interaction) => __awaiter(void 0, void 0, void 0, function* () {
+    if (interaction.isCommand()) {
+        const { commandName } = interaction;
+        if (commands[commandName]) {
+            yield commands[commandName].execute(interaction, exports.client);
+        }
+    }
+    else if (interaction.isButton()) {
+        const userId = interaction.user.id;
+        if (interaction.customId.startsWith('select_language_')) {
+            const selectedLanguage = interaction.customId.split('_').pop();
+            userLanguagePreferences.set(userId, selectedLanguage);
+            yield interaction.reply({
+                content: (0, translationHelper_1.getTranslation)(selectedLanguage, 'language_set'),
+                ephemeral: true,
+            });
+        }
+        else if (interaction.customId === 'resolve_ticket') {
+            const { channelId } = interaction;
+            try {
+                yield interaction.reply({
+                    content: (0, translationHelper_1.getTranslation)(userLanguagePreferences.get(interaction.user.id) || 'en', 'help_is_on_the_way'),
+                    ephemeral: true
+                });
+                yield axios_1.default.post('https://ticketdiscordbot.onrender.com/resolve', { threadId: channelId });
+            }
+            catch (error) {
+                console.log(error);
+                yield interaction.reply({
+                    content: (0, translationHelper_1.getTranslation)(userLanguagePreferences.get(interaction.user.id) || 'en', 'an_error_occurred'),
+                    ephemeral: true,
+                });
+            }
+        }
+    }
 }));
 exports.client.login(config_1.default.DISCORD_TOKEN);
