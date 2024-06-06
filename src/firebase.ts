@@ -13,7 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
-export async function createTicket(threadId: string, text: string) {
+export async function createTicket(threadId: string, text: any) {
     try {
         await setDoc(doc(db, 'tickets', threadId), {
             threadId,

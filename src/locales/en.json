@@ -1,0 +1,8 @@
+{
+    "help_command_description": "Creates a new help ticket.",
+    "help_command_problem_description": "Describe your problem",
+    "resolve_ticket_label": "Resolve Ticket",
+    "help_is_on_the_way": "Help is on the way!",
+    "language_set": "Language set to English",
+    "select_language_prompt": "Please select your preferred language:"
+}
