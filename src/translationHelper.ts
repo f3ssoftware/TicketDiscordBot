@@ -8,8 +8,17 @@ function loadTranslations() {
     const files = fs.readdirSync(localesPath);
     files.forEach(file => {
         const filePath = path.join(localesPath, file);
-        const language = path.basename(file, '.json');
-        translations[language] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        const stats = fs.statSync(filePath);
+        if (stats.isFile() && path.extname(file) === '.json') { // Ensure it is a file and has .json extension
+            const language = path.basename(file, '.json');
+            try {
+                translations[language] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+            } catch (error) {
+                console.error(`Error reading or parsing file ${filePath}:`, error);
+            }
+        } else {
+            console.warn(`${file} is not a JSON file and will be ignored.`);
+        }
     });
 }
 
@@ -21,3 +30,4 @@ export function getTranslation(language: any, key: string): string {
 }
 
 loadTranslations(); // Load translations when the module is imported
+
