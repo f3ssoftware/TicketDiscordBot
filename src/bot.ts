@@ -32,27 +32,34 @@ client.once('ready', async () => {
   const channel = await client.channels.fetch(channelId) as TextChannel;
   
   if (channel) {
-      channel.send({
-          content: "Select your language",
-          components: [createLanguageSelectionButtons()]
-      });
+    channel.send({
+      content: "Select your language",
+      components: [createLanguageSelectionButtons()]
+    }).catch(console.error);
   }
 });
 client.on('interactionCreate', async interaction => {
   if (interaction.isCommand()) {
     const { commandName } = interaction;
-    commands[commandName].execute(interaction, client, selectedLanguage);
+    if (commands[commandName]) {
+      commands[commandName].execute(interaction, client, selectedLanguage);
+    } else {
+      console.error(`Command ${commandName} not found.`);
+    }
   } else if (interaction.isButton()) {
-    if (interaction.customId === 'select_english') {
+    const { customId } = interaction;
+    console.log(`Button clicked: ${customId}`);
+
+    if (customId === 'select_english') {
       selectedLanguage = 'en';
       await interaction.reply({ content: 'Language set to English', ephemeral: true });
-    } else if (interaction.customId === 'select_spanish') {
+    } else if (customId === 'select_spanish') {
       selectedLanguage = 'es';
       await interaction.reply({ content: 'Idioma configurado para Español', ephemeral: true });
-    } else if (interaction.customId === 'select_portuguese') {
+    } else if (customId === 'select_portuguese') {
       selectedLanguage = 'pt';
       await interaction.reply({ content: 'Idioma configurado para Português', ephemeral: true });
-    } else if (interaction.customId === 'resolve_ticket') {
+    } else if (customId === 'resolve_ticket') {
       const { channelId } = interaction;
 
       try {
