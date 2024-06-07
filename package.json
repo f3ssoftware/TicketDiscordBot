@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && copyfiles -u 1 src/locales/**/* build/locales",
+    "build": "tsc",
     "start": "node build/index.js",
     "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
     "deploy:commands": "tsc && node build/deploy-commands.js"
