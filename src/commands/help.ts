@@ -12,7 +12,7 @@ export const data = new SlashCommandBuilder()
     .setDescription("Creates a new help ticket.")
     .addStringOption(option => 
         option.setName("description")
-            .setDescription(translations['en']['problem_description']) // Use the default language for the description
+            .setDescription("describe your problem") // Use the default language for the description
             .setRequired(true)
     );
 
