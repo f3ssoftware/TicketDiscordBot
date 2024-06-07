@@ -1,8 +1,9 @@
 {
-    "help_command_description": "Crea un nuevo ticket de ayuda.",
-    "help_command_problem_description": "Describe tu problema",
-    "resolve_ticket_label": "Resolver Ticket",
-    "help_is_on_the_way": "¡La ayuda está en camino!",
-    "language_set": "Idioma configurado a Español",
-    "select_language_prompt": "Por favor selecciona tu idioma preferido:"
-}
+    "resolve_ticket": "Resolver Ticket",
+    "help_message": "Su ticket de ayuda ha sido creado.",
+    "problem_description": "Describa su problema",
+    "support_ticket": "Ticket de soporte",
+    "user": "Usuario",
+    "problem": "Problema"
+  }
+  
