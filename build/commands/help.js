@@ -12,22 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.data = void 0;
 const discord_js_1 = require("discord.js");
 const firebase_1 = require("../firebase");
-const translationHelper_1 = require("../translationHelper");
-exports.data = new discord_js_1.SlashCommandBuilder()
-    .setName('help')
-    .setDescription((0, translationHelper_1.getTranslation)('en', 'help_command_description'))
-    .addStringOption(option => option
-    .setName('description')
-    .setDescription((0, translationHelper_1.getTranslation)('en', 'help_command_problem_description'))
-    .setRequired(true));
-function execute(interaction, client) {
+const bot_1 = require("../bot");
+exports.data = new discord_js_1.SlashCommandBuilder().setName("help").setDescription("Creates a new help ticket.").addStringOption(option => option.setName("description").setDescription("Describe your problem").setRequired(true));
+function execute(interaction, client, selectedLanguage) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         if (!(interaction === null || interaction === void 0 ? void 0 : interaction.channelId)) {
             return;
         }
-        const userLanguagePreferences = new Map();
-        const userLanguage = userLanguagePreferences.get(interaction.user.id) || 'en';
-        const description = interaction.options.get('description');
         const channel = yield client.channels.fetch(interaction.channelId);
         if (!channel || channel.type != discord_js_1.ChannelType.GuildText) {
             return;
@@ -37,17 +29,20 @@ function execute(interaction, client) {
             reason: `Support ticket ${Date.now()}`,
             type: 12
         });
+        const problemDescription = ((_a = interaction.options.get('description')) === null || _a === void 0 ? void 0 : _a.value) || '';
+        const { user } = interaction;
         const resolveButton = new discord_js_1.ActionRowBuilder().addComponents(new discord_js_1.ButtonBuilder()
             .setCustomId('resolve_ticket')
-            .setLabel((0, translationHelper_1.getTranslation)(userLanguage, 'resolve_ticket_label'))
+            .setLabel(bot_1.translations[selectedLanguage]['resolve_ticket'])
             .setStyle(discord_js_1.ButtonStyle.Success));
         thread.send({
-            content: `**User:** ${interaction.user}\n**Problem:** ${description}`,
+            content: `**User:** ${user}\n**Problem:** ${problemDescription}`,
             components: [resolveButton]
         });
-        yield (0, firebase_1.createTicket)(thread.id, description);
-        yield interaction.reply({
-            content: (0, translationHelper_1.getTranslation)(userLanguage, 'help_is_on_the_way'),
+        //create the ticket and store it in the firestore
+        yield (0, firebase_1.createTicket)(thread.id, problemDescription);
+        return interaction.reply({
+            content: bot_1.translations[selectedLanguage]['help_message'],
             ephemeral: true,
         });
     });
