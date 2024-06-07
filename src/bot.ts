@@ -65,7 +65,7 @@ client.on('interactionCreate', async interaction => {
       try {
         // Confirm the interaction was successful
         await interaction.reply({
-          content: translations[selectedLanguage]['ticket_marked_resolved'],
+          content: translations[selectedLanguage]['resolve_ticket'],
           ephemeral: true
         });
 
@@ -75,7 +75,7 @@ client.on('interactionCreate', async interaction => {
 
         // Reply to the interaction indicating an error
         await interaction.reply({
-          content: translations[selectedLanguage]['ticket_status_updated'],
+          content: "connection error",
           ephemeral: true,
         });
       }
