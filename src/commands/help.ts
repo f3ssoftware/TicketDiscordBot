@@ -3,56 +3,49 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-} from 'discord.js';
-import { createTicket } from '../firebase';
-import { getTranslation } from '../translationHelper';
+} from "discord.js";
+import { createTicket } from "../firebase";
+import {translations} from "../bot"
 
-export const data = new SlashCommandBuilder()
-    .setName('help')
-    .setDescription(getTranslation('en', 'help_command_description'))
-    .addStringOption(option => option
-        .setName('description')
-        .setDescription(getTranslation('en', 'help_command_problem_description'))
-        .setRequired(true));
+export const data = new SlashCommandBuilder().setName("help").setDescription("Creates a new help ticket.").addStringOption(option => option.setName("description").setDescription("Describe your problem").setRequired(true));
 
-export async function execute(interaction: CommandInteraction, client: Client) {
+export async function execute(interaction: CommandInteraction, client: Client, selectedLanguage: string) {
     if (!interaction?.channelId) {
-        return;
+        return
     }
 
-    const userLanguagePreferences = new Map<string, string>();
-    const userLanguage = userLanguagePreferences.get(interaction.user.id) || 'en';
-
-    const description = interaction.options.get('description');
-
-
-    const channel = await client.channels.fetch(interaction.channelId);
+    const channel = await client.channels.fetch(interaction.channelId)
     if (!channel || channel.type != ChannelType.GuildText) {
-        return;
+        return
     }
 
     const thread = await (channel as TextChannel).threads.create({
         name: `support-${Date.now()}`,
         reason: `Support ticket ${Date.now()}`,
         type: 12
-    });
+    })
+
+    const problemDescription = (interaction.options.get('description')?.value as string) || '';
+    const { user } = interaction;
 
     const resolveButton = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
             .setCustomId('resolve_ticket')
-            .setLabel(getTranslation(userLanguage, 'resolve_ticket_label'))
+            .setLabel(translations[selectedLanguage]['resolve_ticket'])
             .setStyle(ButtonStyle.Success)
     );
 
     thread.send({
-        content: `**User:** ${interaction.user}\n**Problem:** ${description}`,
+        content: `**User:** ${user}\n**Problem:** ${problemDescription}`,
         components: [resolveButton]
     });
 
-    await createTicket(thread.id, description);
+    //create the ticket and store it in the firestore
+    await createTicket(thread.id, problemDescription)
 
-    await interaction.reply({
-        content: getTranslation(userLanguage, 'help_is_on_the_way'),
+    return interaction.reply({
+        content: translations[selectedLanguage]['help_message'],
         ephemeral: true,
     });
 }
+
