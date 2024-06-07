@@ -17,7 +17,8 @@ export const client = new Client({
 });
 
 let selectedLanguage: string = 'en'; // Default language
-const localesPath = path.join(__dirname, 'locales');
+// Update the path to the build folder
+const localesPath = path.join(__dirname, '../build/locales');
 export const translations: { [key: string]: any } = {
   en: JSON.parse(fs.readFileSync(path.join(localesPath, 'en.json'), 'utf-8')),
   es: JSON.parse(fs.readFileSync(path.join(localesPath, 'es.json'), 'utf-8')),
