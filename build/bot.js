@@ -52,10 +52,11 @@ exports.client = new discord_js_1.Client({
     ]
 });
 let selectedLanguage = 'en'; // Default language
+const localesPath = path_1.default.join(__dirname, 'locales');
 exports.translations = {
-    en: JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, 'locales/en.json'), 'utf-8')),
-    es: JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, 'locales/es.json'), 'utf-8')),
-    pt: JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, 'locales/pt.json'), 'utf-8')),
+    en: JSON.parse(fs_1.default.readFileSync(path_1.default.join(localesPath, 'en.json'), 'utf-8')),
+    es: JSON.parse(fs_1.default.readFileSync(path_1.default.join(localesPath, 'es.json'), 'utf-8')),
+    pt: JSON.parse(fs_1.default.readFileSync(path_1.default.join(localesPath, 'pt.json'), 'utf-8')),
 };
 exports.client.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Discord bot ready!');

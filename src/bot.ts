@@ -17,11 +17,11 @@ export const client = new Client({
 });
 
 let selectedLanguage: string = 'en'; // Default language
-
+const localesPath = path.join(__dirname, 'locales');
 export const translations: { [key: string]: any } = {
-  en: JSON.parse(fs.readFileSync(path.resolve(__dirname, 'locales/en.json'), 'utf-8')),
-  es: JSON.parse(fs.readFileSync(path.resolve(__dirname, 'locales/es.json'), 'utf-8')),
-  pt: JSON.parse(fs.readFileSync(path.resolve(__dirname, 'locales/pt.json'), 'utf-8')),
+  en: JSON.parse(fs.readFileSync(path.join(localesPath, 'en.json'), 'utf-8')),
+  es: JSON.parse(fs.readFileSync(path.join(localesPath, 'es.json'), 'utf-8')),
+  pt: JSON.parse(fs.readFileSync(path.join(localesPath, 'pt.json'), 'utf-8')),
 };
 
 client.once('ready', async () => {
