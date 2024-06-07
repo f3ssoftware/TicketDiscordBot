@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "postbuild": "cp -R src/locales build/locales",
+    "postbuild": "xcopy src\\locales build\\locales /E /I",
     "start": "node build/index.js",
     "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
     "deploy:commands": "tsc && node build/deploy-commands.js"
