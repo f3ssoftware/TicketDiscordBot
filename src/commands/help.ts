@@ -28,6 +28,9 @@ export async function execute(interaction: CommandInteraction, client: Client, s
     const problemDescription = (interaction.options.get('description')?.value as string) || '';
     const { user } = interaction;
 
+    console.log(`Selected Language: ${selectedLanguage}`);
+    console.log(`Translation for 'resolve_ticket': ${translations[selectedLanguage]['resolve_ticket']}`);
+
     const resolveButton = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
             .setCustomId('resolve_ticket')
