@@ -23,6 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.ping = void 0;
+exports.donate = exports.help = exports.ping = void 0;
 exports.ping = __importStar(require("./ping"));
 exports.help = __importStar(require("./help"));
+exports.donate = __importStar(require("./donate"));

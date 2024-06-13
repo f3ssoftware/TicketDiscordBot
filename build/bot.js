@@ -52,7 +52,8 @@ exports.client = new discord_js_1.Client({
     ]
 });
 let selectedLanguage = 'en'; // Default language
-const localesPath = path_1.default.join(__dirname, 'locales');
+// Update the path to the build folder
+const localesPath = path_1.default.join(__dirname, '../build/locales');
 exports.translations = {
     en: JSON.parse(fs_1.default.readFileSync(path_1.default.join(localesPath, 'en.json'), 'utf-8')),
     es: JSON.parse(fs_1.default.readFileSync(path_1.default.join(localesPath, 'es.json'), 'utf-8')),
@@ -66,33 +67,40 @@ exports.client.once('ready', () => __awaiter(void 0, void 0, void 0, function* (
         channel.send({
             content: "Select your language",
             components: [(0, buttonHelper_1.createLanguageSelectionButtons)()]
-        });
+        }).catch(console.error);
     }
 }));
 exports.client.on('interactionCreate', (interaction) => __awaiter(void 0, void 0, void 0, function* () {
     if (interaction.isCommand()) {
         const { commandName } = interaction;
-        commands[commandName].execute(interaction, exports.client, selectedLanguage);
+        if (commands[commandName]) {
+            commands[commandName].execute(interaction, exports.client, selectedLanguage);
+        }
+        else {
+            console.error(`Command ${commandName} not found.`);
+        }
     }
     else if (interaction.isButton()) {
-        if (interaction.customId === 'select_english') {
+        const { customId } = interaction;
+        console.log(`Button clicked: ${customId}`);
+        if (customId === 'select_english') {
             selectedLanguage = 'en';
             yield interaction.reply({ content: 'Language set to English', ephemeral: true });
         }
-        else if (interaction.customId === 'select_spanish') {
+        else if (customId === 'select_spanish') {
             selectedLanguage = 'es';
             yield interaction.reply({ content: 'Idioma configurado para Español', ephemeral: true });
         }
-        else if (interaction.customId === 'select_portuguese') {
+        else if (customId === 'select_portuguese') {
             selectedLanguage = 'pt';
             yield interaction.reply({ content: 'Idioma configurado para Português', ephemeral: true });
         }
-        else if (interaction.customId === 'resolve_ticket') {
+        else if (customId === 'resolve_ticket') {
             const { channelId } = interaction;
             try {
                 // Confirm the interaction was successful
                 yield interaction.reply({
-                    content: exports.translations[selectedLanguage]['ticket_marked_resolved'],
+                    content: exports.translations[selectedLanguage]['resolve_ticket'],
                     ephemeral: true
                 });
                 yield axios_1.default.post('https://ticketdiscordbot.onrender.com/resolve', { threadId: channelId });
@@ -101,7 +109,7 @@ exports.client.on('interactionCreate', (interaction) => __awaiter(void 0, void 0
                 console.log(error);
                 // Reply to the interaction indicating an error
                 yield interaction.reply({
-                    content: exports.translations[selectedLanguage]['ticket_status_updated'],
+                    content: "connection error",
                     ephemeral: true,
                 });
             }
