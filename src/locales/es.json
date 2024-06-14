@@ -5,6 +5,6 @@
     "support_ticket": "Ticket de soporte",
     "user": "Usuario",
     "problem": "Problema",
-    "error": "error en la solicitud"
+    "errorPlayer": "Player no encontrado"
   }
   

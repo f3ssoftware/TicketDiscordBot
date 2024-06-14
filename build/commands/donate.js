@@ -21,29 +21,25 @@ exports.data = new discord_js_1.SlashCommandBuilder()
     .setDescription('Donate coin')
     .addStringOption(option => option.setName('name')
     .setDescription('Character Name')
-    .setRequired(true))
-    .addNumberOption(option => option.setName('amount')
-    .setDescription('Amount to donate')
     .setRequired(true));
 function execute(interaction, client, selectedLanguage) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
+        var _a;
         const name = (_a = interaction.options.get('name')) === null || _a === void 0 ? void 0 : _a.value;
-        const amount = (_b = interaction.options.get('amount')) === null || _b === void 0 ? void 0 : _b.value;
-        if (!name || !amount) {
+        if (!name) {
             return;
         }
         try {
-            yield axios_1.default.post('http://localhost:3000/players', { name, amount });
+            yield axios_1.default.get(`http://localhost:3000/players/${name}`);
             yield interaction.reply({
-                content: "batendo aqui",
+                content: "Success",
                 ephemeral: true,
             });
         }
         catch (error) {
             console.error(error);
             yield interaction.reply({
-                content: bot_1.translations[selectedLanguage]['error'],
+                content: bot_1.translations[selectedLanguage]['errorPlayer'],
                 ephemeral: true,
             });
         }

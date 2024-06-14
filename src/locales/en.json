@@ -5,6 +5,6 @@
     "support_ticket": "Support ticket",
     "user": "User",
     "problem": "Problem",
-    "error": "Request error"
+    "errorPlayer": "Player not exist"
   }
   

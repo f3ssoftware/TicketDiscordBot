@@ -9,30 +9,25 @@ export const data = new SlashCommandBuilder()
     option.setName('name')
       .setDescription('Character Name')
       .setRequired(true))
-  .addNumberOption(option =>
-    option.setName('amount')
-      .setDescription('Amount to donate')
-      .setRequired(true));
 
 export async function execute(interaction: CommandInteraction, client: Client, selectedLanguage: string) {
   const name = interaction.options.get('name')?.value as string;
-  const amount = interaction.options.get('amount')?.value as number;
 
-  if (!name || !amount) {
+  if (!name ) {
     return;
   }
 
   try {
-    await axios.post('http://localhost:3000/players', { name, amount });
+    await axios.get(`http://localhost:3000/players/${name}`);
 
     await interaction.reply({
-      content: "batendo aqui",
+      content: "Success",
       ephemeral: true,
     });
   } catch (error) {
     console.error(error);
     await interaction.reply({
-      content: translations[selectedLanguage]['error'],
+      content: translations[selectedLanguage]['errorPlayer'],
       ephemeral: true,
     });
   }
