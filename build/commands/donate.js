@@ -31,12 +31,30 @@ function execute(interaction, client, selectedLanguage) {
         }
         try {
             yield axios_1.default.get(`http://localhost:3000/players/${name}`);
-            yield interaction.reply({
-                content: "Success",
-                ephemeral: true,
-            });
+            const modal = new discord_js_1.ModalBuilder({ customId: "donate-form-modal", title: "Formulário para donate" });
+            const name1 = new discord_js_1.ActionRowBuilder({ components: [
+                    new discord_js_1.TextInputBuilder({
+                        customId: "donate-name-input",
+                        label: "Nome",
+                        placeholder: "Digite seu nome",
+                        style: discord_js_1.TextInputStyle.Short
+                    })
+                ] });
+            modal.setComponents(name1);
+            interaction.showModal(modal);
         }
         catch (error) {
+            const modal = new discord_js_1.ModalBuilder({ customId: "donate-form-modal", title: "Formulário para donate" });
+            const name1 = new discord_js_1.ActionRowBuilder({ components: [
+                    new discord_js_1.TextInputBuilder({
+                        customId: "donate-name-input",
+                        label: "Nome",
+                        placeholder: "Digite seu nome",
+                        style: discord_js_1.TextInputStyle.Short
+                    })
+                ] });
+            modal.setComponents(name1);
+            interaction.showModal(modal);
             console.error(error);
             yield interaction.reply({
                 content: bot_1.translations[selectedLanguage]['errorPlayer'],

@@ -5,5 +5,5 @@
     "support_ticket": "Support ticket",
     "user": "User",
     "problem": "Problem",
-    "errorPlayer": "Player not exist"
+    "errorPlayer": "Player not found"
 }
